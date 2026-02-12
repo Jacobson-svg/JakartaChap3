@@ -1,24 +1,47 @@
+triggers {
+    githubPush() // Déclenche le build sur réception d'un webhook GitHub
+}
+
 pipeline {
-    agent any // Définit l'exécuteur
+    agent any
+
+    environment {
+        // Définis tes variables ici
+        TOMCAT_CREDENTIALS_ID = 'tomcat-manager-user' // ID configuré dans Jenkins Credentials
+        TOMCAT_URL = 'http://funky-oryx-thankful.ngrok-free.app'
+    }
 
     stages {
         stage('Checkout') {
             steps {
-                checkout scm // Récupère le code automatiquement
+                checkout scm
             }
         }
-        
-        // C'est ici que tu ajouteras tes étapes spécifiques
-        stage('Build') {
+
+        stage('Build WAR') {
             steps {
-                echo 'Compilation en cours...'
+                // On génère le fichier .war (exemple avec Maven)
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Deploy to Tomcat') {
+            steps {
+                // Utilisation du plugin "Deploy to container"
+                deploy adapters: [tomcat9(url: "${TOMCAT_URL}")], 
+                       contextPath: 'mon-app', 
+                       war: 'target/*.war', 
+                       credentialsId: "${TOMCAT_CREDENTIALS_ID}"
             }
         }
     }
-    
+
     post {
-        always {
-            echo 'Fin du pipeline.'
+        success {
+            echo 'Déploiement réussi sur Tomcat !'
+        }
+        failure {
+            echo 'Le pipeline a échoué. Vérifie les logs.'
         }
     }
 }
