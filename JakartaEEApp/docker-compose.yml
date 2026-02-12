@@ -1,0 +1,9 @@
+services:
+  tomee:
+    image: tomee:9-jre17-webprofile
+    container_name: tomee-server
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./target/JakartaEEApp-1.0-SNAPSHOT.war:/usr/local/tomee/webapps/JakartaEEApp-1.0-SNAPSHOT.war
+    restart: unless-stopped

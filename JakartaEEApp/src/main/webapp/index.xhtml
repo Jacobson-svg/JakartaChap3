@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+<title>JSF - Exemple</title>
+</head>
+<body>
+<h:form>
+<h3>Entrez votre nom :</h3>
+<h:inputText value="#{userBean.nom}" />
+<h:commandButton value="Envoyer"
+action="#{userBean.direBonjour}" />
+<br/>
+<h:outputText value="#{userBean.direBonjour()}" />
+</h:form>
+</body>
+</html>
